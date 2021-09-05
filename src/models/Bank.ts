@@ -84,13 +84,29 @@ export default class Bank {
   }
 
   /**
+   * List of pending transaction that owed by account name
+   * @param accountName source account name
+   */
+  public OwedToTransaction(accountName: string): Transaction[] {
+    return this.Transactions.filter(transaction => transaction.From === accountName && transaction.Status === TransactionStatus.PENDING);
+  }
+
+  /**
+   * List of pending transaction that owed from account name
+   * @param accountName source account name
+   */
+  public OwedFromTransaction(accountName: string): Transaction[] {
+    return this.Transactions.filter(transaction => transaction.To === accountName && transaction.Status === TransactionStatus.PENDING);
+  }
+
+  /**
    * Add balance into Bank Account
    * @param accountName balance target account name
    * @param amount added balanced
    */
   public Deposit(accountName: string, amount: number): void {
     const srcAccount = this.Accounts.find(account => account.Name === accountName);
-    const srcPendingTransaction = this.Transactions.filter(transaction => transaction.From === accountName && transaction.Status === TransactionStatus.PENDING);
+    const srcPendingTransaction = this.OwedToTransaction(accountName);
     const date = new Date();
 
     if (srcAccount && amount > 0) {
